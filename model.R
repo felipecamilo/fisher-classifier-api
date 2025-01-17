@@ -1,9 +1,8 @@
 
-
 fit.scale <- function(x){
   if ("matrix" %in% class(x)){
-    mean_vector <- matrix(mapply(mean,x),nrow = 1)
-    D <- diag(1/mapply(sd,x))
+    mean_vector <- matrix(colMeans(x),nrow = 1)
+    D <- diag(1/apply(x,2,sd))
     
     scale.fitted <- list(mean_vector,D)
     class(scale.fitted)  <- "scale.fit"
@@ -25,11 +24,12 @@ transform.scale <- function(x, scale){
   
   return( (x - matrix(rep(1,nrow(x))) %*% scale[[1]]) %*% scale[[2]] )
 }
-class(data[,1])
+
 # definir também threshold na lista
 # implementação para duas classes
 fit.fisher_discriminant <- function(x,y){
   #errors
+  #they must have the same lenght
   if (!("matrix" %in% class(x))){
     stop("x must be a numerical matrix!")
   }
@@ -42,15 +42,16 @@ fit.fisher_discriminant <- function(x,y){
   
   groups <- unique(y)
   
-  #spliting data into groups and calculating general mean
+  #spliting data into groups and calculating groups and general means
   
-  general_mean <- numeric(0)
+  general_mean <- matrix(apply(x,2,mean))
+  group_means <-  NULL
   for(i in 1:length(groups)){
     group_sample <- x[y==groups[i],]
     
-    general_mean <- general_mean + apply(group_sample, 2 , sum)
+    group_means <- cbind(group_means, unname(apply(group_sample, 2 , mean)))
   }
-  general_mean <- matrix(general_mean/nrow(x))
+  #general_mean <- apply(group_means,1,mean)
   
   #calculating B and W
   B <- matrix(0,nrow = ncol(x),ncol = ncol(x))
@@ -58,29 +59,58 @@ fit.fisher_discriminant <- function(x,y){
   
   for(i in 1:length(groups)) {
     group_sample <- x[y==groups[i],]
-    group_mean <- matrix(apply(group_sample, 2, mean))
     
-    B <- B + nrow(group_sample) * (group_mean - general_mean) %*% t(group_mean - general_mean) 
+    B <- B + nrow(group_sample) * (group_means[,i] - general_mean) %*% t(group_means[,i] - general_mean) 
     W <- W + cov(group_sample) * (nrow(group_sample)-1)
   }
   
-  #Finding the vectors that maximizes the discriminant ratio
+  #finding the vectors that maximizes the discriminant ratio
   eigen_WB <- eigen(solve(W)%*%B)
-  projection_matrix <- matrix(eigen_WB$vectors[,eigen_WB$values != 0])
+  projection_matrix <- matrix(Re(eigen_WB$vectors[,Re(eigen_WB$values) > 1e-10]))
+
+  #projecting the data over the new discriminant axes (orthogonal base)
+  projected_data <- x %*% projection_matrix
   
+  #returning model with its class
   
+  model <- list(x = x, y = y, groups = groups, group_means = group_means, projection_matrix = projection_matrix, projected_data = projected_data)
+  class(model) <- "model.fisher_discriminant"
+  
+  return(model)
 }
 
-predict.fisher_discrimant <- function(newx,model){
-
+predict.fisher_discrimant <- function(newx, model){
+  #errors
+  #linhas duplicadas
+  #classe errada de model
+  
+  #projecting the newdata and group_means into the discriminant axes
+  projected_newx <- newx %*% model$projection_matrix
+  projected_group_means <- t(model$group_means) %*% model$projection_matrix
+  
+  #calculating the distances between the projected newdata and the group_means
+  distances <- NULL
+  for(i in 1:length(model$groups)){
+    distance_group_i <- apply(projected_newx - matrix(rep(1,nrow(x))) %*% projected_group_means, 1, norm, type = "2")
+    distances <- cbind(distances, distance_group_i)
+  }
+  
+  #finding the groups with the minimal distance
+  min_dist_index <- apply(distances,1,which.min)
+  
+  predictions <- data.frame(prediction = model$groups[min_dist_index], newx)
+  
+  return(predictions)
 }
-matrix(0,nrow = ncol(as.matrix(data[,-1])),ncol = ncol(as.matrix(data[,-1])))
-general_mean <- numeric(30)
-general_mean + mapply(mean, as.matrix(data[data$diagnosis == "M",-1]))
 
 
-?mapply
-?apply
-matrix(apply(as.matrix(data[data$diagnosis == "M",-1]), 2, mean))
-eigen_objects <- eigen(matrix(c(c(2,1),c(2,1)),nrow=2))
-matrix(eigen_objects$vectors[,eigen_objects$values != 0])
+#x.train <- as.matrix(data[lines,-1])
+#x.test <- as.matrix(data[-lines,-1])
+#y.train <- data[lines,1]
+#y.test <- data[-lines,1]
+
+#scaled.x.train <- transform.scale(x.train, fit.scale(x.train))
+#scaled.x.test <- transform.scale(x.test, fit.scale(x.train))
+
+#modelo <- fit.fisher_discriminant(scaled.x.train,y.train)
+
