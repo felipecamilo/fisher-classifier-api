@@ -91,7 +91,7 @@ predict.fisher_discrimant <- function(newx, model){
   #calculating the distances between the projected newdata and the group_means
   distances <- NULL
   for(i in 1:length(model$groups)){
-    distance_group_i <- apply(projected_newx - matrix(rep(1,nrow(x))) %*% projected_group_means, 1, norm, type = "2")
+    distance_group_i <- apply(projected_newx - matrix(rep(1,nrow(newx))) %*% projected_group_means[i,], 1, norm, type = "2")
     distances <- cbind(distances, distance_group_i)
   }
   
@@ -111,6 +111,9 @@ predict.fisher_discrimant <- function(newx, model){
 
 #scaled.x.train <- transform.scale(x.train, fit.scale(x.train))
 #scaled.x.test <- transform.scale(x.test, fit.scale(x.train))
-
+#scaled.x <- transform.scale(as.matrix(data[,-1]), fit.scale(as.matrix(data[,-1])))
 #modelo <- fit.fisher_discriminant(scaled.x.train,y.train)
+
+#predicao <- predict.fisher_discrimant(scaled.x.test,modelo)
+#mean(predicao$prediction == y.test)
 
