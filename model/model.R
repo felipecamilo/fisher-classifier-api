@@ -79,7 +79,7 @@ fit.fisher_discriminant <- function(x,y){
   return(model)
 }
 
-predict.fisher_discrimant <- function(newx, model){
+predict.fisher_discriminant <- function(newx, model){
   #errors
   #linhas duplicadas
   #classe errada de model
@@ -114,6 +114,5 @@ predict.fisher_discrimant <- function(newx, model){
 #scaled.x <- transform.scale(as.matrix(data[,-1]), fit.scale(as.matrix(data[,-1])))
 #modelo <- fit.fisher_discriminant(scaled.x.train,y.train)
 
-#predicao <- predict.fisher_discrimant(scaled.x.test,modelo)
+#predicao <- predict.fisher_discriminant(scaled.x.test,modelo)
 #mean(predicao$prediction == y.test)
-
