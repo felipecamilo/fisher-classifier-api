@@ -1,6 +1,8 @@
 library(plumber)
 library(jsonlite)
 library(caret)
+library(SMOTEWB)
+
 
 source("model/model.R")
 
@@ -26,9 +28,11 @@ function(req) {
   scaled.x <- transform.scale(as.matrix(sorted_df), default_transformation)
   
   #predict and update prediction history
-  #histórico de predições persistente
-  predict.fisher_discriminant(scaled.x,model)
   
+  prediction <- predict.fisher_discriminant(scaled.x,model)
+  write.csv(rbind(read.csv("data/predictions_history.csv"),prediction),"data/predictions_history.csv")
+  
+  prediction
 }
 
 #* @get /model-info
@@ -63,9 +67,26 @@ function() {
   list(n_final_model = nrow(data), accuracy = accuracy, confusion_matrix = as.data.frame(confusion.matrix))
 }
 
+#* @get /history
+#* @serializer json
+function(){
+  history <- read.csv("data/predictions_history.csv")
+  history
+}
 
-
-
+#* @get /generate-synthetic-sample
+#* @serializer json
+function(){
+  if(sample(data$diagnosis,1) == "M"){
+    unbalanced_data <- rbind(data[data$diagnosis == "M",],data[sample(as.numeric(row.names(data[data$diagnosis == "B",])), sum(data$diagnosis == "M")+1),])
+    synthetic_sample <- SMOTEWB::SMOTE(unbalanced_data[,-1],as.factor(unbalanced_data[,1]))$x_syn
+  }
+  else{
+    unbalanced_data <- rbind(data[data$diagnosis == "M",],data[sample(as.numeric(row.names(data[data$diagnosis == "B",])), sum(data$diagnosis == "M")-1),])
+    synthetic_sample <- SMOTEWB::SMOTE(unbalanced_data[,-1],as.factor(unbalanced_data[,1]))$x_syn
+  }
+  as.data.frame(synthetic_sample)
+}
 
 
 
