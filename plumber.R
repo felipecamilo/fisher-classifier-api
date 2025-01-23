@@ -3,7 +3,6 @@ library(jsonlite)
 library(caret)
 library(SMOTEWB)
 
-
 source("model/model.R")
 
 data <- read.csv("data/breastCancerData.csv")
@@ -11,16 +10,24 @@ data <- read.csv("data/breastCancerData.csv")
 model <- readRDS("model/precomputedModel.rds")
 default_transformation <- readRDS("model/precomputedTransformation.rds")
 
+source("model/dataValidation.R")
+
 #* @apiTitle Fisher Classifier API
 
 # API classify a tumor
 #* @post /predict
 #* @serializer json
-function(req) {
+function(req, res) {
+  df <- fromJSON(req$body)
   #errors
   
+  validation_result <- validate_input(df)
+  
+  if (!validation_result$valid) {
+    res$status <- 400  #HTTP code for bad request
+    return(list(status = "error", error = validation_result$error))
+  }
   #sorting the cols
-  df <- fromJSON(req$body)
   sorted_cols <- data[FALSE,-1]
   
   sorted_df <- merge(sorted_cols, df, all.y = TRUE)
@@ -30,7 +37,9 @@ function(req) {
   #predict and update prediction history
   
   prediction <- predict.fisher_discriminant(scaled.x,model)
-  write.csv(rbind(read.csv("data/predictions_history.csv"),prediction),"data/predictions_history.csv")
+  prediction[,-1] <- transform.unscale(as.matrix(prediction[,-1]), default_transformation)
+  
+  write.csv(rbind(read.csv("data/predictions_history.csv"),prediction),"data/predictions_history.csv", row.names = FALSE)
   
   prediction
 }
@@ -87,6 +96,7 @@ function(){
   }
   as.data.frame(synthetic_sample)
 }
+
 
 
 

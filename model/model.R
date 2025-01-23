@@ -4,7 +4,7 @@ fit.scale <- function(x){
     mean_vector <- matrix(colMeans(x),nrow = 1)
     D <- diag(1/apply(x,2,sd))
     
-    scale.fitted <- list(mean_vector,D)
+    scale.fitted <- list(mean_vector = mean_vector,D = D)
     class(scale.fitted)  <- "scale.fit"
     
     return(scale.fitted)
@@ -25,15 +25,25 @@ transform.scale <- function(x, scale){
   return( (x - matrix(rep(1,nrow(x))) %*% scale[[1]]) %*% scale[[2]] )
 }
 
-# definir também threshold na lista
-# implementação para duas classes
-fit.fisher_discriminant <- function(x,y){
-  #errors
-  #they must have the same lenght
+transform.unscale <- function(x,  scale){
   if (!("matrix" %in% class(x))){
     stop("x must be a numerical matrix!")
   }
+  if (class(scale) != "scale.fit"){
+    stop("scale must be a scale.fit!")
+  }
   
+  return(x %*% diag(1/diag(scale[[2]])) + matrix(rep(1,nrow(x))) %*% scale[[1]])
+}
+
+fit.fisher_discriminant <- function(x,y){
+  #errors
+  if (!("matrix" %in% class(x))){
+    stop("x must be a numerical matrix!")
+  }
+  if (nrow(x) != length(y)){
+    stop("x and y must have the same number of rows!")
+  }
   #extracting groups
 
   if ("data.frame" %in% class(y)){
@@ -81,8 +91,10 @@ fit.fisher_discriminant <- function(x,y){
 
 predict.fisher_discriminant <- function(newx, model){
   #errors
-  #linhas duplicadas
   #classe errada de model
+  if (class(model) != "model.fisher_discriminant"){
+    stop("scale must be a model.fisher_discriminant!")
+  }
   
   #projecting the newdata and group_means into the discriminant axes
   projected_newx <- newx %*% model$projection_matrix
