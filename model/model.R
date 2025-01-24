@@ -114,17 +114,3 @@ predict.fisher_discriminant <- function(newx, model){
   
   return(predictions)
 }
-
-
-#x.train <- as.matrix(data[lines,-1])
-#x.test <- as.matrix(data[-lines,-1])
-#y.train <- data[lines,1]
-#y.test <- data[-lines,1]
-
-#scaled.x.train <- transform.scale(x.train, fit.scale(x.train))
-#scaled.x.test <- transform.scale(x.test, fit.scale(x.train))
-#scaled.x <- transform.scale(as.matrix(data[,-1]), fit.scale(as.matrix(data[,-1])))
-#modelo <- fit.fisher_discriminant(scaled.x.train,y.train)
-
-#predicao <- predict.fisher_discriminant(scaled.x.test,modelo)
-#mean(predicao$prediction == y.test)

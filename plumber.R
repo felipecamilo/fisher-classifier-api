@@ -1,3 +1,5 @@
+renv::restore()
+
 library(plumber)
 library(jsonlite)
 library(caret)
@@ -13,6 +15,7 @@ default_transformation <- readRDS("model/precomputedTransformation.rds")
 source("model/dataValidation.R")
 
 #* @apiTitle Fisher Classifier API
+#* @apiDescription Custom implementation of Fisher's Discriminant Analysis deployed via a REST API for classification tasks
 
 # API classify a tumor
 #* @post /predict
@@ -41,7 +44,7 @@ function(req, res) {
   
   write.csv(rbind(read.csv("data/predictions_history.csv"),prediction),"data/predictions_history.csv", row.names = FALSE)
   
-  prediction
+  prediction[,1]
 }
 
 #* @get /model-info
@@ -96,7 +99,3 @@ function(){
   }
   as.data.frame(synthetic_sample)
 }
-
-
-
-
