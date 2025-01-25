@@ -164,12 +164,32 @@ nulos da matriz:
 $$\mathbf{W}^{-1}\mathbf{B}
 $$
 
-por isso os dados são geralmente projetados em sub-espaços de baixa
-dimensionalidade; no caso de menos que 4 dimensões podemos visualizar
-todo o sub-espaço e até mesmo classificar novas observações a olho!
+onde $\mathbf{W}$ é a soma em todas as g classes
+$\sum_{i = 1}^g(n_i-1)\mathbf{S}_i$ e
+$\mathbf{B}= \sum_{i = 1}^gn_i(\mathbf{\bar{x}}_i-\mathbf{\bar{x}})(\mathbf{\bar{x}}_i-\mathbf{\bar{x}})^T$
+sendo $\mathbf{S}_i$, $\mathbf{\bar{x}}_i$ e $n_i$ a matriz de
+covariância amostral, o vetor de médias amostral e quantidade de
+amostras, todos na classe $i$, respectivamente.
 
-No nosso modelo com Breast Cancer Wsosdssauiibn temos somente uma
-componente discriminante
+Se $p$ é o número de variáveis numéricas dos dados e $g$ a quantidade de
+classes, O número máximo de vetores com autovalor nao-nulo é o
+$min(p,g-1)$, por isso os dados são geralmente projetados em sub-espaços
+de baixa dimensionalidade; no caso de menos que 4 dimensões podemos
+visualizar todo o sub-espaço e até mesmo classificar novas observações a
+olho!
+
+No nosso modelo com Breast Cancer Wisconsin Diagnostic Data Set temos
+duas classes e portanto somente uma componente discriminante,
+permitindo-nos visualizar a projeção dos dados em um histograma
+unidimensional:
+
+![](man/figures/README-projected_data-1.png)<!-- -->
+
+Com os dados separados dessa forma, fica fácil até mesmo `classificar`
+novas observações. Se você tem interesse em se aprofundar mais no
+assunto, recomendo o livro de Johnson e Wichern,
+`Applied Multivariate Statistical Analysis`, que utilizei como
+referência.
 
 <h2>
 🤝 Contribua
