@@ -165,8 +165,8 @@ $$\mathbf{W}^{-1}\mathbf{B}
 $$
 
 onde $\mathbf{W}$ é a soma em todas as g classes
-$\sum_{i = 1}^g(n_i-1)\mathbf{S}_i$ e
-$\mathbf{B}= \sum_{i = 1}^gn_i(\mathbf{\bar{x}}_i-\mathbf{\bar{x}})(\mathbf{\bar{x}}_i-\mathbf{\bar{x}})^T$
+$`\sum_{i = 1}^g(n_i-1)\mathbf{S}_i`$ e
+$`\mathbf{B}= \sum_{i = 1}^gn_i(\mathbf{\bar{x}}_i-\mathbf{\bar{x}})(\mathbf{\bar{x}}_i-\mathbf{\bar{x}})^T`$
 sendo $\mathbf{S}_i$, $\mathbf{\bar{x}}_i$ e $n_i$ a matriz de
 covariância amostral, o vetor de médias amostral e quantidade de
 amostras, todos na classe $i$, respectivamente.
@@ -185,9 +185,9 @@ unidimensional:
 
 ![](man/figures/README-projected_data-1.png)<!-- -->
 
-Com os dados separados dessa forma, fica fácil até mesmo `classificar`
-novas observações. Se você tem interesse em se aprofundar mais no
-assunto, recomendo o livro de Johnson e Wichern,
+Com os dados separados dessa forma, `classificar` novas observações fica
+fácil até mesmo manualmente! Se você tem interesse em se aprofundar mais
+no assunto, recomendo o livro de Johnson e Wichern,
 `Applied Multivariate Statistical Analysis`, que utilizei como
 referência.
 
