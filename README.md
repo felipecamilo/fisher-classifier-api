@@ -8,7 +8,7 @@
 
 Análise discriminante de Fisher consiste na projeção dos dados em poucos
 vetores, de forma a “maximizar a separabilidade” das classes envolvidas
-em um sub-espaço de baixa dimensionalidade.
+em um subespaço de baixa dimensionalidade.
 
 `Fisher_classifier-api` é uma API com o deploy de um modelo de
 aprendizado supervisionado de máquina construído from scratch, o
@@ -28,7 +28,7 @@ Estrutura do banco de dados
 </h3>
 
 O conjunto de dados é composto por 31 colunas, desta sendo uma variável
-resposta, o diagnóstico do tumor:
+resposta: o diagnóstico do tumor
 
 - `diagnosis:` variável categórica com duas categorias: B e M, indicando
   (com a respectiva letra inicial) se o tumor é benigno ou maligno.
@@ -40,7 +40,7 @@ características observadas nos núcleos celulares das massas mamárias.
 Pré-requisitos
 </h3>
 
-Você precisará do gerenciador de dependêcias `renv` instalado
+Você precisará do gerenciador de dependências `renv` instalado
 
 ``` bash
 install.packages("renv")
@@ -68,7 +68,6 @@ git clone https://github.com/felipecamilo/fisher-classifier-api
 <h3>
 POST /predict
 </h3>
-<!--Endpoint que recebe como entrada as características de uma amostra e retorna o diagnóstico predito (benigno ou maligno). uma requisição nessa rota deve possuir no corpo um JSON, **obrigatóriamente seguindo** o formato do exemplo (para o caso de duas predições):-->
 
 **REQUISIÇÃO**
 
@@ -153,13 +152,13 @@ GET /history
 </h2>
 
 A análise discriminante de Fisher é um método clássico de `separação` de
-classes, neste modelo a ideia para separar os dados é projeta-los em uma
+classes, neste modelo a ideia para separar os dados é projetá-los em uma
 nova base ortonormal de componentes (vetores) discriminantes, obtida de
 tal forma que a sua direção é a que ao mesmo tempo maximiza a variância
 entre classes, minimizando a variância intra classes. É possível mostrar
 que a estimativa das componentes que melhor discriminam os dados de
-acordo com o critério establecido são os autovetores com autovalores não
-nulos da matriz:
+acordo com o critério establecido são os autovetores com autovalores
+não-nulos da matriz:
 
 $$\mathbf{W}^{-1}\mathbf{B}
 $$
@@ -172,10 +171,10 @@ covariância amostral, o vetor de médias amostral e quantidade de
 amostras, todos na classe $i$, respectivamente.
 
 Se $p$ é o número de variáveis numéricas dos dados e $g$ a quantidade de
-classes, O número máximo de vetores com autovalor nao-nulo é o
-$min(p,g-1)$, por isso os dados são geralmente projetados em sub-espaços
+classes, O número máximo de vetores com autovalor não-nulo é o
+$min(p,g-1)$, por isso os dados são geralmente projetados em subespaços
 de baixa dimensionalidade; no caso de menos que 4 dimensões podemos
-visualizar todo o sub-espaço e até mesmo classificar novas observações a
+visualizar todo o subespaço e até mesmo classificar novas observações a
 olho!
 
 No nosso modelo com Breast Cancer Wisconsin Diagnostic Data Set temos
