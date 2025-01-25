@@ -151,14 +151,14 @@ GET /history
 📚 Matemática por trás
 </h2>
 
-A análise discriminante de Fisher é um método clássico de `separação` de
-classes, neste modelo a ideia para separar os dados é projetá-los em uma
-nova base ortonormal de componentes (vetores) discriminantes, obtida de
-tal forma que a sua direção é a que ao mesmo tempo maximiza a variância
-entre classes, minimizando a variância intra classes. É possível mostrar
-que a estimativa das componentes que melhor discriminam os dados de
-acordo com o critério establecido são os autovetores com autovalores
-não-nulos da matriz:
+A análise discriminante de Fisher (ADF) é um método clássico de
+`separação` de classes, neste modelo a ideia para separar os dados é
+projetá-los em uma nova base ortonormal de componentes (vetores)
+discriminantes, obtida de tal forma que a sua direção é a que ao mesmo
+tempo maximiza a variância entre classes, minimizando a variância intra
+classes. É possível mostrar que a estimativa das componentes que melhor
+discriminam os dados de acordo com o critério establecido são os
+autovetores com autovalores não-nulos da matriz:
 
 $$\mathbf{W}^{-1}\mathbf{B}
 $$
@@ -176,6 +176,12 @@ $min(p,g-1)$, por isso os dados são geralmente projetados em subespaços
 de baixa dimensionalidade; no caso de menos que 4 dimensões podemos
 visualizar todo o subespaço e até mesmo classificar novas observações a
 olho!
+
+ADF é não paramétrica, porém assume a igualdade das matrizes de
+covariância entre as classes, pressuposto esse que possui certa robustez
+(como no nosso caso). Ainda assim é fundamental que as classes sejam
+linearmente separáveis, caso contrário o método perde o sentido e
+deve-se buscar alternativas como a variação por kernel.
 
 No nosso modelo com Breast Cancer Wisconsin Diagnostic Data Set temos
 duas classes e portanto somente uma componente discriminante,
